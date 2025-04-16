@@ -1,0 +1,10 @@
+opencv-python
+numpy
+pyzbar
+ultralytics
+pillow
+google-cloud-vision
+pandas
+scipy
+python-dotenv
+yaml

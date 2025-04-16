@@ -1,4 +1,4 @@
 models/
-Requirement files/
 temp_images/
+__pycache__/
 .DS_Store

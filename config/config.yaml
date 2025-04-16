@@ -1,0 +1,20 @@
+models:
+  qr_model: "/Users/saieshagre/Downloads/New-Inventory-Management/models/qr_detection.pt"
+  blue_bar_model: "/Users/saieshagre/Downloads/New-Inventory-Management/models/blue_bar_detection.pt"
+  box_model: "/Users/saieshagre/Downloads/New-Inventory-Management/models/box_detection.pt"
+  orange_bar_model: "/Users/saieshagre/Downloads/New-Inventory-Management/models/orange_bar_detection.pt"
+
+csv:
+  nomenclature: "/Users/saieshagre/Downloads/New-Inventory-Management/models/rack structure.csv"
+  row_data: "/Users/saieshagre/Downloads/New-Inventory-Management/models/row-data (14).csv"
+
+input:
+  image_directory: "//Users/saieshagre/Downloads/New-Inventory-Management/temp_images"
+
+thresholds:
+  blue_bar_model:
+    confidence_threshold: 0.5
+    merge_threshold: 50
+  
+  orange_bar_model:
+    confidence_threshold: 0.5
