@@ -5,7 +5,7 @@ import os
 import numpy as np
 from PIL import Image
 from google.cloud import vision
-#from detection.correction import Corrections
+from detection.correction import Corrector
 
 
 class ImageProcessor:
@@ -123,21 +123,21 @@ class ImageProcessor:
                 if roi_top <= center_y_box <= roi_bottom and left_line_x <= center_x_box <= right_line_x:
                     box_centers.append((center_x_box, center_y_box))
 
-                    print(f"[{i}-{j}] Bounding Box Center: ({center_x_box:.2f}, {center_y_box:.2f})")
+                    #print(f"[{i}-{j}] Bounding Box Center: ({center_x_box:.2f}, {center_y_box:.2f})")
 
                     # Count objects based on their position relative to the image center
                     if center_x_box <= image_center_x:
                         left_count += 1
-                        print(f"    -> Left bbox detected: Center at {center_x_box:.2f}")
+                        #print(f"    -> Left bbox detected: Center at {center_x_box:.2f}")
                     else:  # Right side
                         right_count += 1
-                        print(f"    -> Right bbox detected: Center at {center_x_box:.2f}")
+                        #print(f"    -> Right bbox detected: Center at {center_x_box:.2f}")
 
         # Summary of detections
-        print(f"\nDetection Summary:")
-        print(f"  - Left Count: {left_count}")
-        print(f"  - Right Count: {right_count}")
-        print(f"  - Total Bounding Boxes: {left_count + right_count}")
+        # print(f"\nDetection Summary:")
+        # print(f"  - Left Count: {left_count}")
+        # print(f"  - Right Count: {right_count}")
+        # print(f"  - Total Bounding Boxes: {left_count + right_count}")
 
         return left_count, right_count, box_centers
 
@@ -159,7 +159,7 @@ class ImageProcessor:
                     (box_number, fixed_part_number, invoice_number, quantity, bounding_box).
                 - The computed image center X-coordinate.
         """
-        corrector = Corrections()
+        corrector = Corrector()
 
         # Load image
         image = cv2.imread(image_path)

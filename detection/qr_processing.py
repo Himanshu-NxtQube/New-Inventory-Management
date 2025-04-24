@@ -15,6 +15,21 @@ class QRProcessor:
 
         self.qr_model = YOLO(CONFIG['models']['qr_model'])
 
+    def determine_quadrant(self,img,coordinate):
+        height, width, _ = img.shape
+
+        center_x, center_y = self.util.find_image_center(img)
+        quadrants = {
+            'Q1': {'x_min': center_x, 'x_max': width, 'y_min': 0, 'y_max': center_y},
+            'Q2': {'x_min': 0, 'x_max': center_x, 'y_min': 0, 'y_max': center_y},
+            'Q3': {'x_min': 0, 'x_max': center_x, 'y_min': center_y, 'y_max': height},
+            'Q4': {'x_min': center_x, 'x_max': width, 'y_min': center_y, 'y_max': height}
+        }
+        x, y = coordinate
+        for quad, bounds in quadrants.items():
+            if bounds['x_min'] <= x <= bounds['x_max'] and bounds['y_min'] <= y <= bounds['y_max']:
+                return quad
+        return None
 
     def extract_qr_code_data(
         self, 
@@ -41,7 +56,7 @@ class QRProcessor:
         img = cv2.imread(img_path)
         if img is None:
             raise ValueError(f"Could not read image at: {img_path}")
-
+        
         center_x, center_y = self.util.find_image_center(img)
         detections = self._get_qr_code_detections(img, center_x, center_y, left_roi_x, right_roi_x)
 
@@ -52,9 +67,21 @@ class QRProcessor:
         for qr in selected_qr_codes:
             result = self._process_qr_code(qr, img, center_x, center_y, upper_roi_y, lower_roi_y)
             if result["barcode_data"].startswith("HD"):
-                rack_qrs.append(result)
+                rack_id = result["barcode_data"]
+                x1, y1, x2, y2 = result['coordinates']
+                rack_center = ((x1+x2)//2, (y1+y2)//2)
+
+                quad = self.determine_quadrant(img,rack_center)
+
+                rack_qrs.append((rack_id,quad))
+
             elif result["barcode_data"].startswith("Box"):
-                box_qrs.append(result)
+                box_info = result['barcode_data']
+                start_idx = box_info.find('@')
+                unique_id = box_info[start_idx:start_idx+6]
+                x1, y1, x2, y2 = result['coordinates']
+                box_center = ((x1+x2)//2, (y1+y2)//2)
+                box_qrs.append((unique_id,box_center))
 
         return rack_qrs, box_qrs
 
@@ -73,7 +100,7 @@ class QRProcessor:
         Returns:
             List of QR code bounding box data including distance from center.
         """
-        results = self.qr_model.predict(img, conf=0.4)
+        results = self.qr_model.predict(img, conf=0.4, verbose = False)
         detections = []
 
         for result in results:
@@ -110,6 +137,7 @@ class QRProcessor:
         }
 
         return [min(qr_list, key=lambda x: x[6]) for qr_list in quadrants.values() if qr_list]
+        #return quadrants.values()
 
 
     def _process_qr_code(

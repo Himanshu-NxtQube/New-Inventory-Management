@@ -1,15 +1,15 @@
 models:
-  qr_model: "/Users/saieshagre/Downloads/New-Inventory-Management/models/qr_detection.pt"
-  blue_bar_model: "/Users/saieshagre/Downloads/New-Inventory-Management/models/blue_bar_detection.pt"
-  box_model: "/Users/saieshagre/Downloads/New-Inventory-Management/models/box_detection.pt"
-  orange_bar_model: "/Users/saieshagre/Downloads/New-Inventory-Management/models/orange_bar_detection.pt"
+  qr_model: "./models/qr_detection.pt"
+  blue_bar_model: "./models/blue_bar_detection.pt"
+  pallet_model: "./models/pallet1.pt"
+  orange_bar_model: "./models/orange_bar_detection.pt"
 
 csv:
-  nomenclature: "/Users/saieshagre/Downloads/New-Inventory-Management/models/rack structure.csv"
-  row_data: "/Users/saieshagre/Downloads/New-Inventory-Management/models/row-data (14).csv"
+  nomenclature: "./models/rack structure.csv"
+  row_data: "./models/row-data (14).csv"
 
 input:
-  image_directory: "//Users/saieshagre/Downloads/New-Inventory-Management/temp_images"
+  image_directory: "./test images"
 
 thresholds:
   blue_bar_model:

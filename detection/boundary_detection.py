@@ -3,6 +3,8 @@ import numpy as np
 from typing import Tuple, List
 from ultralytics import YOLO
 from config.settings import CONFIG
+import os
+from contextlib import redirect_stdout
 
 
 class BoundaryDetector:
@@ -60,7 +62,9 @@ class BoundaryDetector:
         image = self._load_image(image_path)
         img_width = image.shape[1]
 
-        results = self.blue_bar_model(image)
+        
+        results = self.blue_bar_model(image, verbose = False)
+
         centers = self._extract_bbox_centers_x(results, self.blue_threshold)
         merged_centers = self._merge_close_centers(centers, self.blue_merge_threshold)
 
@@ -109,7 +113,8 @@ class BoundaryDetector:
         Returns:
             List[np.ndarray]: List of filtered bounding boxes.
         """
-        results = model(image)
+        results = model.predict(image, verbose = False)
+
         boxes = results[0].boxes.data.cpu().numpy()
         return [box for box in boxes if box[4] > conf_threshold]  # box[4] = confidence
 
